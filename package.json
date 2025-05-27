@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@adonisjs/auth": "^8.2.3"
+  }
+}

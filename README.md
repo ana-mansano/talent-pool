@@ -1,6 +1,13 @@
 # Talent Pool
 
 Sistema de gerenciamento de talentos para recrutamento e seleção.
+![image](https://github.com/user-attachments/assets/435884d0-b869-43fe-92ac-b9e66ce04ee4)
+![image](https://github.com/user-attachments/assets/7b7d0e5a-2eb5-4b10-af9f-7669b0fe6584)
+![image](https://github.com/user-attachments/assets/bf8bdfee-1e63-4f89-ad28-e943ff7a6542)
+![image](https://github.com/user-attachments/assets/6d1f911a-ab27-41b8-a1e0-b7e8e31112c7)
+![image](https://github.com/user-attachments/assets/9b024878-4ddb-46e9-b201-62994a70bbe8)
+![image](https://github.com/user-attachments/assets/f88985d2-4dfb-4d3e-8bbe-06ccddc04e30)
+![image](https://github.com/user-attachments/assets/46e0e576-02ec-4bb2-9871-e79280aeb242)
 
 ## Tecnologias Utilizadas
 

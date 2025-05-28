@@ -1,133 +1,68 @@
-# Portal de Talentos
+# Talent Pool
 
-Sistema de gerenciamento de talentos para empresas, permitindo o cadastro de candidatos e seleção para entrevistas.
+Sistema de gerenciamento de talentos para recrutamento e seleção.
 
 ## Tecnologias Utilizadas
 
 ### Backend
-- AdonisJS v5
-- MySQL
+- AdonisJS
 - TypeScript
+- PostgreSQL
 - JWT para autenticação
-- Validação de dados
-- Logging de segurança
-- Headers de segurança
 
 ### Frontend
-- ReactJS
+- React
 - TypeScript
-- React Query para gerenciamento de estado
-- Axios para requisições HTTP
-- Componentes reutilizáveis
-- Feedback visual para o usuário
-- Validação de formulários
+- React Query
+- Styled Components
 
-## Funcionalidades
+## Estrutura do Projeto
 
-- Cadastro de candidatos com dados pessoais, formação e habilidades
-- Preenchimento automático de endereço via CEP
-- Autenticação de usuários (candidatos e gestores)
-- Listagem e busca de candidatos
-- Seleção de candidatos para entrevista
-- Notificações por email
-- Interface responsiva
+O projeto está dividido em duas partes principais:
 
-## Requisitos
+- `backend/`: API REST desenvolvida com AdonisJS
+- `frontend/`: Interface web desenvolvida com React
 
-- Node.js 14+
-- MySQL 8+
-- NPM ou Yarn
-
-## Instalação
-
-1. Clone o repositório:
-```bash
-git clone https://github.com/seu-usuario/portal-talentos.git
-cd portal-talentos
-```
-
-2. Instale as dependências do backend:
-```bash
-cd backend
-npm install
-```
-
-3. Configure o banco de dados:
-- Crie um banco MySQL
-- Copie o arquivo `.env.example` para `.env`
-- Configure as variáveis de ambiente no arquivo `.env`
-
-4. Execute as migrations:
-```bash
-node ace migration:run
-```
-
-5. Instale as dependências do frontend:
-```bash
-cd ../frontend
-npm install
-```
-
-## Executando o Projeto
-
-1. Inicie o backend:
-```bash
-cd backend
-npm run dev
-```
-
-2. Inicie o frontend:
-```bash
-cd frontend
-npm start
-```
-
-O backend estará disponível em `http://localhost:3333` e o frontend em `http://localhost:3000`.
-
-## Testes
+## Configuração do Ambiente
 
 ### Backend
 ```bash
 cd backend
-npm test
+npm install
+cp .env.example .env
+npm run dev
 ```
 
 ### Frontend
 ```bash
 cd frontend
-npm test
+npm install
+npm run dev
 ```
 
-## Segurança
+## Seeds
 
-O projeto implementa várias camadas de segurança:
+Foram criados seeds para as seguintes habilidades:
+- Java
+- Node.js
+- C++
+- PHP
+- Python
+- Go
+- ADVPL
+- Angular
+- Electron
+- React
+- React Native
+- MongoDB
+- MySQL
+- SQLServer
+- Postgres
+- Backend
+- Front-End
 
-- Autenticação JWT com expiração
-- Validação de dados
-- Sanitização de inputs
-- Headers de segurança
-- Rate limiting
-- Logging de segurança
-- Proteção contra XSS e CSRF
+## Documentação Detalhada
 
-## Estrutura do Projeto
-
-```
-portal-talentos/
-├── backend/
-│   ├── app/
-│   │   ├── Controllers/
-│   │   ├── Models/
-│   │   ├── Validators/
-│   │   └── Middleware/
-│   ├── database/
-│   │   └── migrations/
-│   └── tests/
-└── frontend/
-    ├── src/
-    │   ├── components/
-    │   ├── pages/
-    │   ├── services/
-    │   └── styles/
-    └── tests/
-```
+Para mais detalhes sobre cada parte do projeto, consulte:
+- [Documentação do Backend](backend/README.md)
+- [Documentação do Frontend](frontend/README.md)

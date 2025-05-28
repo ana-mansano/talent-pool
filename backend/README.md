@@ -33,19 +33,32 @@ DB_PORT=5432
 DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
 DB_DATABASE=talent_pool
+
+# Configuração do Ethereal para testes de email
+SMTP_HOST=smtp.ethereal.email
+SMTP_PORT=587
+SMTP_USER=seu_usuario_ethereal
+SMTP_PASSWORD=sua_senha_ethereal
 ```
 
-4. Execute as migrations:
+4. Para testar emails com Ethereal:
+   - Acesse https://ethereal.email/
+   - Clique em "Create Ethereal Account"
+   - Copie as credenciais geradas
+   - Atualize as variáveis SMTP_* no arquivo .env
+   - Os emails enviados aparecerão no painel do Ethereal
+
+5. Execute as migrations:
 ```bash
 node ace migration:run
 ```
 
-5. Execute os seeds:
+6. Execute os seeds:
 ```bash
 node ace db:seed
 ```
 
-6. Inicie o servidor:
+7. Inicie o servidor:
 ```bash
 npm run dev
 ```

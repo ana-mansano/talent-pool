@@ -63,12 +63,13 @@ export default function Profile() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar userName={userName} />
-      <div style={{ 
+      <main style={{ 
         flex: 1,
         padding: '2rem',
         maxWidth: '1200px',
         margin: '0 auto',
-        width: '100%'
+        width: '100%',
+        marginTop: '4rem'
       }}>
         {candidate?.selectedForInterview && (
           <div style={{
@@ -92,7 +93,7 @@ export default function Profile() {
             <Skills skills={candidate.skills} />
           </>
         )}
-      </div>
+      </main>
     </div>
   )
 } 

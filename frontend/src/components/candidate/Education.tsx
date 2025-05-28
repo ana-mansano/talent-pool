@@ -96,8 +96,12 @@ export default function Education({ educations }: EducationProps) {
       const response = await api.post('/candidates/education', formattedData)
       return response.data
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['candidateProfile'] })
+    onSuccess: (data) => {
+      // Atualiza o cache do React Query manualmente
+      queryClient.setQueryData(['candidateProfile'], (oldData: any) => ({
+        ...oldData,
+        educations: [...oldData.educations, data.education]
+      }))
       setShowEducationForm(false)
       setEducationForm({ courseName: '', institutionName: '', completionDate: '' })
     }
@@ -109,8 +113,12 @@ export default function Education({ educations }: EducationProps) {
       const response = await api.delete(`/candidates/education/${id}`)
       return response.data
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['candidateProfile'] })
+    onSuccess: (_, educationId) => {
+      // Atualiza o cache do React Query manualmente
+      queryClient.setQueryData(['candidateProfile'], (oldData: any) => ({
+        ...oldData,
+        educations: oldData.educations.filter((education: any) => education.id !== educationId)
+      }))
     }
   })
 

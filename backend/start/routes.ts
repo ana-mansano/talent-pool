@@ -57,6 +57,6 @@ Route.group(() => {
     Route.get('/candidates/:id', 'RecruitersController.showCandidate')
     Route.post('/candidates/:id/skills', 'RecruitersController.addCandidateSkill')
     Route.delete('/candidates/:id/skills/:skillId', 'RecruitersController.removeCandidateSkill')
-    Route.post('/candidates/:id/select', 'RecruitersController.selectForInterview')
+    Route.post('/candidates/:id/interview', 'CandidatesController.selectForInterview')
   }).middleware('role:manager')
 }).prefix('/api').middleware('auth')

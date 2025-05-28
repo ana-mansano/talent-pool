@@ -10,6 +10,13 @@ export default function SetPassword() {
     passwordConfirmation: ''
   })
   const [error, setError] = useState('')
+  const [passwordRequirements, setPasswordRequirements] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    special: false
+  })
 
   const token = new URLSearchParams(location.search).get('token')
 
@@ -24,16 +31,40 @@ export default function SetPassword() {
     }
   }, [token, navigate])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
+  const validatePassword = (password: string) => {
+    setPasswordRequirements({
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
     })
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+
+    if (name === 'password') {
+      validatePassword(value)
+    }
+  }
+
+  const isPasswordValid = () => {
+    return Object.values(passwordRequirements).every(req => req)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    if (!isPasswordValid()) {
+      setError('A senha não atende a todos os requisitos')
+      return
+    }
 
     if (formData.password !== formData.passwordConfirmation) {
       setError('As senhas não coincidem')
@@ -72,6 +103,26 @@ export default function SetPassword() {
               onChange={handleChange}
               required
             />
+            <div className="password-requirements">
+              <p>A senha deve conter:</p>
+              <ul>
+                <li className={passwordRequirements.length ? 'valid' : ''}>
+                  Mínimo de 8 caracteres
+                </li>
+                <li className={passwordRequirements.uppercase ? 'valid' : ''}>
+                  Pelo menos uma letra maiúscula
+                </li>
+                <li className={passwordRequirements.lowercase ? 'valid' : ''}>
+                  Pelo menos uma letra minúscula
+                </li>
+                <li className={passwordRequirements.number ? 'valid' : ''}>
+                  Pelo menos um número
+                </li>
+                <li className={passwordRequirements.special ? 'valid' : ''}>
+                  Pelo menos um caractere especial
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div className="form-group">
@@ -88,7 +139,11 @@ export default function SetPassword() {
 
           {error && <div className="error-message">{error}</div>}
 
-          <button type="submit" className="btn btn-primary">
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            disabled={!isPasswordValid()}
+          >
             Definir Senha
           </button>
         </form>

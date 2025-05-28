@@ -36,8 +36,12 @@ export default function Skills({ skills }: SkillsProps) {
       const response = await api.post('/candidates/skills', { skillId })
       return response.data
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['candidateProfile'] })
+    onSuccess: (data) => {
+      // Atualiza o cache do React Query manualmente
+      queryClient.setQueryData(['candidateProfile'], (oldData: any) => ({
+        ...oldData,
+        skills: [...oldData.skills, data.skill]
+      }))
       setShowSkillForm(false)
     }
   })
@@ -48,8 +52,12 @@ export default function Skills({ skills }: SkillsProps) {
       const response = await api.delete(`/candidates/skills/${skillId}`)
       return response.data
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['candidateProfile'] })
+    onSuccess: (_, skillId) => {
+      // Atualiza o cache do React Query manualmente
+      queryClient.setQueryData(['candidateProfile'], (oldData: any) => ({
+        ...oldData,
+        skills: oldData.skills.filter((skill: any) => skill.id !== skillId)
+      }))
     }
   })
 
@@ -107,11 +115,13 @@ export default function Skills({ skills }: SkillsProps) {
               }}
             >
               <option value="">Selecione uma habilidade</option>
-              {Array.isArray(availableSkills) && availableSkills.map((skill: Skill) => (
-                <option key={skill.id} value={skill.id}>
-                  {skill.name}
-                </option>
-              ))}
+              {Array.isArray(availableSkills) && availableSkills
+                .filter(skill => !skills.some(s => s.id === skill.id))
+                .map((skill: Skill) => (
+                  <option key={skill.id} value={skill.id}>
+                    {skill.name}
+                  </option>
+                ))}
             </select>
           )}
         </div>

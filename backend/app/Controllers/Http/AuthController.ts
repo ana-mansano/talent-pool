@@ -21,6 +21,49 @@ export default class AuthController {
     )
   }
 
+  private validatePassword(password: string): { isValid: boolean; message?: string } {
+    if (password.length < 8) {
+      return {
+        isValid: false,
+        message: 'A senha deve ter no mínimo 8 caracteres'
+      }
+    }
+
+    // Verifica se tem pelo menos uma letra maiúscula
+    if (!/[A-Z]/.test(password)) {
+      return {
+        isValid: false,
+        message: 'A senha deve conter pelo menos uma letra maiúscula'
+      }
+    }
+
+    // Verifica se tem pelo menos uma letra minúscula
+    if (!/[a-z]/.test(password)) {
+      return {
+        isValid: false,
+        message: 'A senha deve conter pelo menos uma letra minúscula'
+      }
+    }
+
+    // Verifica se tem pelo menos um número
+    if (!/[0-9]/.test(password)) {
+      return {
+        isValid: false,
+        message: 'A senha deve conter pelo menos um número'
+      }
+    }
+
+    // Verifica se tem pelo menos um caractere especial
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return {
+        isValid: false,
+        message: 'A senha deve conter pelo menos um caractere especial'
+      }
+    }
+
+    return { isValid: true }
+  }
+
   public async register({ request, response }: HttpContextContract) {
     try {
       const data = request.only(['name', 'email', 'role'])
@@ -130,6 +173,15 @@ export default class AuthController {
         return response.badRequest({
           message: 'Token de verificação expirado',
           code: 'TOKEN_EXPIRED'
+        })
+      }
+
+      // Valida a senha
+      const passwordValidation = this.validatePassword(password)
+      if (!passwordValidation.isValid) {
+        return response.badRequest({
+          message: passwordValidation.message,
+          code: 'INVALID_PASSWORD'
         })
       }
 

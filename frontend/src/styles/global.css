@@ -540,3 +540,39 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* Password Requirements */
+.password-requirements {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.password-requirements p {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.password-requirements ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.password-requirements li {
+  margin-bottom: 0.25rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.password-requirements li::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  color: var(--danger-color);
+}
+
+.password-requirements li.valid::before {
+  content: '✓';
+  color: var(--success-color);
+}

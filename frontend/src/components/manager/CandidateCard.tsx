@@ -27,7 +27,7 @@ interface Candidate {
     completionDate: string | null
   }[]
   selectedForInterview: boolean
-  interviewDate?: string
+  interviewDate: string | null
 }
 
 interface CandidateCardProps {
@@ -52,17 +52,18 @@ export default function CandidateCard({ candidate, onSelect }: CandidateCardProp
       setIsSelecting(true)
       setError('')
       
-      const response = await api.post(`/candidates/${candidate.id}/select`)
+      const response = await api.post(`/candidates/${candidate.id}/interview`)
       
       // Atualiza o cache do React Query com a resposta da API
       queryClient.setQueryData(['candidates'], (oldData: any) => {
-        if (!oldData) return oldData
+        if (!oldData || !Array.isArray(oldData)) return oldData
+        
         return oldData.map((c: any) => 
           c.id === candidate.id 
             ? { 
                 ...c, 
                 selectedForInterview: true,
-                interviewDate: response.data.candidate.interviewDate
+                interviewDate: response.data.interviewDate
               }
             : c
         )
@@ -70,12 +71,13 @@ export default function CandidateCard({ candidate, onSelect }: CandidateCardProp
 
       // Atualiza o estado local
       candidate.selectedForInterview = true
-      candidate.interviewDate = response.data.candidate.interviewDate
+      candidate.interviewDate = response.data.interviewDate
 
       onSelect()
       setShowModal(false)
-    } catch (error) {
-      setError('Erro ao selecionar candidato. Tente novamente.')
+    } catch (error: any) {
+      console.error('Erro ao selecionar candidato:', error)
+      setError(error.response?.data?.message || 'Erro ao selecionar candidato. Tente novamente.')
     } finally {
       setIsSelecting(false)
     }
@@ -130,85 +132,51 @@ export default function CandidateCard({ candidate, onSelect }: CandidateCardProp
           </div>
         )}
 
-        <div style={{ 
-          flex: 1,
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <div style={{ marginBottom: '0.5rem' }}>
-            <h3 style={{ 
-              color: 'var(--primary-color)',
-              marginBottom: '0.25rem',
-              fontSize: '1.1rem'
-            }}>
-              {candidate.name}
-            </h3>
-            <p style={{ 
-              color: 'var(--text-color-light)',
-              fontSize: '0.75rem'
-            }}>
-              Código: {candidate.code}
-            </p>
-          </div>
-
-          <div style={{ marginBottom: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem' }}>Email: {candidate.email}</p>
-          </div>
-
-          <div style={{ marginBottom: '0.5rem' }}>
-            <strong style={{ fontSize: '0.875rem' }}>Habilidades:</strong>
-            {candidate.skills && candidate.skills.length > 0 ? (
-              <div style={{ 
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '0.25rem',
-                marginTop: '0.25rem'
-              }}>
-                {candidate.skills.slice(0, 5).map((skill, index) => (
-                  <span
-                    key={index}
-                    style={{
-                      padding: '0.15rem 0.35rem',
-                      backgroundColor: 'var(--primary-color-light)',
-                      color: 'var(--primary-color)',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem'
-                    }}
-                  >
-                    {skill}
-                  </span>
-                ))}
-                {candidate.skills.length > 5 && (
-                  <span
-                    style={{
-                      padding: '0.15rem 0.35rem',
-                      backgroundColor: 'var(--primary-color-light)',
-                      color: 'var(--primary-color)',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem'
-                    }}
-                  >
-                    +{candidate.skills.length - 5}
-                  </span>
-                )}
-              </div>
-            ) : (
-              <p style={{ 
-                marginTop: '0.25rem', 
-                color: 'var(--text-color-light)',
-                fontStyle: 'italic',
-                fontSize: '0.75rem'
-              }}>
-                Sem habilidades cadastradas
-              </p>
-            )}
-          </div>
+        <div style={{ marginBottom: '0.5rem' }}>
+          <h3 style={{ 
+            fontSize: '1.1rem',
+            color: 'var(--text-color)',
+            marginBottom: '0.25rem'
+          }}>
+            {candidate.name}
+          </h3>
+          <p style={{ 
+            fontSize: '0.875rem',
+            color: 'var(--text-color-light)'
+          }}>
+            Código: {candidate.code}
+          </p>
         </div>
 
-        <div style={{ 
-          padding: '0.5rem 0 0.25rem 0',
-          borderTop: '1px solid var(--border-color)',
+        <div style={{ marginBottom: '0.5rem' }}>
+          <p style={{ 
+            fontSize: '0.875rem',
+            color: 'var(--text-color)'
+          }}>
+            {candidate.email}
+          </p>
+        </div>
+
+        <div style={{ marginBottom: '0.5rem' }}>
+          <p style={{ 
+            fontSize: '0.875rem',
+            color: 'var(--text-color)'
+          }}>
+            {candidate.phone || 'Telefone não informado'}
+          </p>
+        </div>
+
+        <div style={{ marginBottom: '0.5rem' }}>
+          <p style={{ 
+            fontSize: '0.875rem',
+            color: 'var(--text-color)'
+          }}>
+            {candidate.skills.slice(0, 3).join(', ')}
+            {candidate.skills.length > 3 && '...'}
+          </p>
+        </div>
+
+        <div style={{
           marginTop: 'auto',
           display: 'flex',
           gap: '0.5rem'

@@ -26,13 +26,12 @@ interface Candidate {
     completionDate: string
   }[]
   selectedForInterview: boolean
+  interviewDate: string | null
 }
 
 export default function CandidatesList() {
   const userName = localStorage.getItem('userName') || 'Gestor'
   const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
   const queryClient = useQueryClient()
 
   const { data: candidates = [], isLoading } = useQuery<Candidate[]>({
@@ -46,30 +45,15 @@ export default function CandidatesList() {
     }
   })
 
-  // Paginação no frontend
+  // Filtragem no frontend
   const filteredCandidates = candidates.filter(candidate => 
     candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     candidate.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const paginatedCandidates = filteredCandidates.slice(startIndex, endIndex)
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
-
   const handleCandidateSelect = () => {
-    // Força uma nova busca dos dados
     queryClient.invalidateQueries({ queryKey: ['candidates'] })
-    queryClient.refetchQueries({ 
-      queryKey: ['candidates'],
-      exact: true,
-      type: 'active'
-    })
   }
 
   return (
@@ -99,10 +83,7 @@ export default function CandidatesList() {
             type="text"
             placeholder="Buscar por nome, email ou habilidade..."
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value)
-              setCurrentPage(1)
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
             style={{
               width: '100%',
               padding: '0.75rem',
@@ -116,104 +97,20 @@ export default function CandidatesList() {
         {isLoading ? (
           <div style={{ textAlign: 'center' }}>Carregando...</div>
         ) : (
-          <>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '2rem',
-              marginBottom: '2rem'
-            }}>
-              {paginatedCandidates.map(candidate => (
-                <CandidateCard
-                  key={candidate.id}
-                  candidate={candidate}
-                  onSelect={handleCandidateSelect}
-                />
-              ))}
-            </div>
-
-            {/* Paginação */}
-            {totalPages > 1 && (
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                marginTop: '2rem'
-              }}>
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    backgroundColor: 'var(--primary-color)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: currentPage === 1 ? 'default' : 'pointer',
-                    opacity: currentPage === 1 ? 0.5 : 1
-                  }}
-                >
-                  Anterior
-                </button>
-                
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1)
-                    .filter(page => {
-                      if (page === 1 || page === totalPages) return true
-                      if (Math.abs(page - currentPage) <= 1) return true
-                      return false
-                    })
-                    .map((page, index, array) => {
-                      const showEllipsis = index > 0 && array[index - 1] !== page - 1
-                      return (
-                        <div key={page} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          {showEllipsis && (
-                            <span style={{ color: 'var(--text-color)' }}>...</span>
-                          )}
-                          <button
-                            onClick={() => handlePageChange(page)}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              backgroundColor: 'var(--primary-color)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontWeight: page === currentPage ? 'bold' : 'normal',
-                              boxShadow: page === currentPage ? '0 2px 8px rgba(0,0,0,0.3)' : 'none',
-                              transform: page === currentPage ? 'scale(1.05)' : 'none',
-                              transition: 'all 0.2s ease'
-                            }}
-                          >
-                            {page}
-                          </button>
-                        </div>
-                      )
-                    })}
-                </div>
-
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    backgroundColor: 'var(--primary-color)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: currentPage === totalPages ? 'default' : 'pointer',
-                    opacity: currentPage === totalPages ? 0.5 : 1
-                  }}
-                >
-                  Próxima
-                </button>
-              </div>
-            )}
-          </>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '2rem',
+            marginBottom: '2rem'
+          }}>
+            {filteredCandidates.map(candidate => (
+              <CandidateCard
+                key={candidate.id}
+                candidate={candidate}
+                onSelect={handleCandidateSelect}
+              />
+            ))}
+          </div>
         )}
       </main>
     </div>

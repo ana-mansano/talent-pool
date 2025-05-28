@@ -50,6 +50,117 @@ node ace db:seed
 npm run dev
 ```
 
+## Documentação da API
+
+### Autenticação
+
+#### Registro de Usuário
+```http
+POST /api/register
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao.silva@exemplo.com",
+  "password": "senha123"
+}
+```
+
+**Regras de Validação da Senha:**
+- Mínimo de 8 caracteres
+- Pelo menos uma letra maiúscula
+- Pelo menos uma letra minúscula
+- Pelo menos um número
+- Pelo menos um caractere especial
+
+#### Login
+```http
+POST /api/login
+Content-Type: application/json
+
+{
+  "email": "joao.silva@exemplo.com",
+  "password": "senha123"
+}
+```
+
+#### Verificação de Email
+```http
+POST /api/verify-email
+Content-Type: application/json
+
+{
+  "token": "token-de-verificacao",
+  "password": "senha123"
+}
+```
+
+**Regras de Validação da Senha:**
+- Mínimo de 8 caracteres
+- Pelo menos uma letra maiúscula
+- Pelo menos uma letra minúscula
+- Pelo menos um número
+- Pelo menos um caractere especial
+
+### Candidatos
+
+#### Criar Perfil
+```http
+POST /api/candidates
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "birthDate": "1990-01-01",
+  "phone": "11999999999",
+  "zipCode": "12345678"
+}
+```
+
+#### Adicionar Habilidade
+```http
+POST /api/candidates/skills
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "skillId": 1
+}
+```
+
+#### Listar Habilidades
+```http
+GET /api/candidates/skills
+Authorization: Bearer {token}
+```
+
+#### Adicionar Formação
+```http
+POST /api/candidates/education
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "courseName": "Ciência da Computação",
+  "institutionName": "Universidade XYZ",
+  "completionDate": "2023-12-31"
+}
+```
+
+### Gestor
+
+#### Listar Candidatos
+```http
+GET /api/candidates
+Authorization: Bearer {token}
+```
+
+#### Selecionar para Entrevista
+```http
+POST /api/candidates/:id/interview
+Authorization: Bearer {token}
+```
+
 ## Rotas Principais
 
 ### Autenticação

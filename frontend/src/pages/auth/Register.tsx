@@ -84,7 +84,7 @@ export default function Register() {
               className="form-input"
             >
               <option value="candidate">Candidato</option>
-              <option value="recruiter">Recrutador</option>
+              <option value="manager">Gestor</option>
             </select>
           </div>
 

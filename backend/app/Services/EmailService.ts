@@ -59,17 +59,31 @@ export default class EmailService {
 
   public static async sendInterviewNotification(email: string, name: string, interviewDate: DateTime) {
     const formattedDate = interviewDate.toFormat("dd/MM/yyyy 'às' HH:mm")
+    const companyName = Env.get('COMPANY_NAME', 'Nossa Empresa')
+    const companyAddress = Env.get('COMPANY_ADDRESS', 'Endereço da empresa')
+    const companyPhone = Env.get('COMPANY_PHONE', 'Telefone da empresa')
 
-    await Mail.send((message) => {
-      message
-        .from(Env.get('MAIL_FROM_ADDRESS'))
-        .to(email)
-        .subject('Você foi selecionado para uma entrevista!')
-        .htmlView('emails/interview', { 
-          name, 
-          interviewDate: formattedDate,
-          companyName: Env.get('COMPANY_NAME', 'Nossa Empresa')
-        })
-    })
+    try {
+      Logger.info(`Enviando email de entrevista para ${email}`)
+      
+      await Mail.send((message) => {
+        message
+          .from(Env.get('MAIL_FROM_ADDRESS'))
+          .to(email)
+          .subject('Você foi selecionado para uma entrevista!')
+          .htmlView('emails/interview', { 
+            name, 
+            interviewDate: formattedDate,
+            companyName,
+            companyAddress,
+            companyPhone
+          })
+      })
+
+      Logger.info(`Email de entrevista enviado com sucesso para ${email}`)
+    } catch (error) {
+      Logger.error(`Erro ao enviar email de entrevista para ${email}:`, error)
+      throw error
+    }
   }
 } 

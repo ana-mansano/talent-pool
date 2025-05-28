@@ -26,18 +26,17 @@ function Login() {
       const response = await api.post('/login', formData)
       console.log('Resposta do login:', response.data)
       
-      const { token, role, user } = response.data
+      const { token, user } = response.data
 
       localStorage.setItem('token', token)
-      localStorage.setItem('userRole', role)
-      localStorage.setItem('userName', user?.name || 'Usuário')
+      localStorage.setItem('userRole', user.role)
+      localStorage.setItem('userName', user.name || 'Usuário')
 
-      navigate('/home', {
-        state: {
-          message: 'Login realizado com sucesso!',
-          type: 'success'
-        }
-      })
+      if (user.role === 'manager') {
+        window.location.href = '/candidates'
+      } else {
+        window.location.href = '/'
+      }
     } catch (error) {
       setError('Email ou senha inválidos')
     }

@@ -30,7 +30,11 @@ export default function PersonalData({ candidate }: PersonalDataProps) {
     phone: '',
     zipCode: '',
     number: '',
-    complement: ''
+    complement: '',
+    street: '',
+    neighborhood: '',
+    city: '',
+    state: ''
   })
 
   // Função para formatar o telefone
@@ -122,7 +126,11 @@ export default function PersonalData({ candidate }: PersonalDataProps) {
         phone,
         zipCode: candidate.zip_code || '',
         number: candidate.number || '',
-        complement: candidate.complement || ''
+        complement: candidate.complement || '',
+        street: candidate.street || '',
+        neighborhood: candidate.neighborhood || '',
+        city: candidate.city || '',
+        state: candidate.state || ''
       })
     }
   }, [candidate])
@@ -176,8 +184,16 @@ export default function PersonalData({ candidate }: PersonalDataProps) {
       const formattedData = {
         ...data,
         phone: unformatPhone(data.phone),
-        birthDate: convertToISODate(data.birthDate)
+        birthDate: convertToISODate(data.birthDate),
+        zipCode: data.zipCode,
+        number: data.number,
+        complement: data.complement || '',
+        street: data.street || '',
+        neighborhood: data.neighborhood || '',
+        city: data.city || '',
+        state: data.state || ''
       }
+      console.log('Dados enviados:', formattedData)
       const response = await api.put('/candidates/profile', formattedData)
       return response.data
     },
@@ -189,14 +205,21 @@ export default function PersonalData({ candidate }: PersonalDataProps) {
         phone: unformatPhone(profileForm.phone),
         zip_code: profileForm.zipCode,
         number: profileForm.number,
-        complement: profileForm.complement
+        complement: profileForm.complement,
+        street: profileForm.street,
+        neighborhood: profileForm.neighborhood,
+        city: profileForm.city,
+        state: profileForm.state,
+        skills: data.candidate.skills || oldData.skills,
+        educations: data.candidate.educations || oldData.educations
       }))
 
       setNotificationMessage('Dados atualizados com sucesso!')
       setNotificationType('success')
     },
-    onError: (error) => {
-      setNotificationMessage('Erro ao atualizar dados. Tente novamente.')
+    onError: (error: any) => {
+      console.error('Erro ao atualizar:', error)
+      setNotificationMessage(error.response?.data?.message || 'Erro ao atualizar dados. Tente novamente.')
       setNotificationType('error')
     }
   })
@@ -231,7 +254,7 @@ export default function PersonalData({ candidate }: PersonalDataProps) {
         }}>
           <h2 style={{ color: 'var(--primary-color)' }}>Dados Pessoais</h2>
           <button
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/', { replace: true })}
             style={{
               display: 'flex',
               alignItems: 'center',

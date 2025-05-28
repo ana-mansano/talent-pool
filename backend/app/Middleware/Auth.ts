@@ -19,12 +19,19 @@ export default class Auth {
       
       try {
         const decoded = jwt.verify(token, Env.get('APP_KEY')) as any
-        
         const user = await User.findOrFail(decoded.id)
-        
+      
+
+        // Verifica se o usuário está verificado
+        if (!user.emailVerified) {
+          return response.unauthorized({
+            message: 'Email não verificado',
+            code: 'EMAIL_NOT_VERIFIED'
+          })
+        }
+
         // Adiciona o usuário ao contexto da requisição
         request.user = user
-        
         await next()
       } catch (error) {
         return response.unauthorized({ 

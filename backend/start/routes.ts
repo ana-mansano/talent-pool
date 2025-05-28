@@ -51,12 +51,12 @@ Route.group(() => {
     Route.delete('/candidates/education/:id', 'CandidatesController.removeEducation')
   }).middleware('role:candidate')
 
-  // Rotas do recrutador
+  // Rotas do gestor
   Route.group(() => {
     Route.get('/candidates', 'RecruitersController.listCandidates')
     Route.get('/candidates/:id', 'RecruitersController.showCandidate')
     Route.post('/candidates/:id/skills', 'RecruitersController.addCandidateSkill')
     Route.delete('/candidates/:id/skills/:skillId', 'RecruitersController.removeCandidateSkill')
     Route.post('/candidates/:id/select', 'RecruitersController.selectForInterview')
-  }).middleware('role:recruiter')
+  }).middleware('role:manager')
 }).prefix('/api').middleware('auth')

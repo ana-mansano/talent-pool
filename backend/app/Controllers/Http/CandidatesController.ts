@@ -91,17 +91,34 @@ export default class CandidatesController {
         'state'
       ])
 
+      console.log('Dados recebidos:', data)
+
+      // Mapeia os campos do frontend para o backend
+      const mappedData = {
+        birthDate: data.birthDate,
+        phone: data.phone,
+        zipCode: data.zipCode,
+        street: data.street || '',
+        number: data.number || '',
+        complement: data.complement || '',
+        neighborhood: data.neighborhood || '',
+        city: data.city || '',
+        state: data.state || ''
+      }
+
       // Atualiza o candidato com os novos dados
-      candidate.merge(data)
+      candidate.merge(mappedData)
       await candidate.save()
 
       // Recarrega o candidato com todos os relacionamentos
-      await candidate.refresh()
+      await candidate.load('skills')
+      await candidate.load('educations')
 
       // Formata a resposta
       const formattedCandidate = {
         ...candidate.serialize(),
         birthDate: candidate.birthDate ? candidate.birthDate.toFormat('yyyy-MM-dd') : null,
+        skills: candidate.skills,
         educations: candidate.educations.map(education => ({
           ...education.serialize(),
           completionDate: education.completionDate ? education.completionDate.toFormat('yyyy-MM-dd') : null
@@ -113,7 +130,11 @@ export default class CandidatesController {
         candidate: formattedCandidate
       })
     } catch (error) {
-      return response.badRequest({ message: 'Erro ao atualizar perfil' })
+      console.error('Erro ao atualizar perfil:', error)
+      return response.badRequest({ 
+        message: 'Erro ao atualizar perfil',
+        error: error.message 
+      })
     }
   }
 
